@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dse-studio
+  labels:
+    app: dse-studio
+spec:
+  type: NodePort
+  ports:
+    - port: 9091
+      protocol: TCP
+      targetPort: 9091
+      nodePort: 30010
+  selector:
+    app: dse-studio
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dse-studio
+  labels:
+    app: dse-studio
+spec:
+  serviceName: dse-studio
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dse-studio
+  template:
+    metadata:
+      namespace: datastax
+      labels:
+        app: dse-studio
+    spec:
+      terminationGracePeriodSeconds: 1800
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: dse-studio
+          image: crwstax/dsd-dse-studio:0.0.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9091
+              name: studio-ui
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: "0.5"
+              memory: 1Gi
+          env:
+            - name: DS_LICENSE
+              value: accept
+            - name: STUDIO_DEFAULT_CONNECTION_HOST
+              value: dse-server
+            - name: STUDIO_DEFAULT_CONNECTION_NAME
+              value: DataStax Desktop
+          volumeMounts:
+            - name: dse-studio-data
+              mountPath: /var/lib/datastax-studio
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9091
+            failureThreshold: 20
+            initialDelaySeconds: 30
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: dse-studio-data
+        annotations:
+          pv.beta.kubernetes.io/gid: "1000"
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        # storageClassName:
+        resources:
+          requests:
+            storage: 1Gi

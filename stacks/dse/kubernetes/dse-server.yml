@@ -1,0 +1,174 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dse-server
+  labels:
+    app: dse-server
+spec:
+  type: NodePort
+  ports:
+    - port: 9042
+      nodePort: 30042
+      protocol: TCP
+      name: cql
+    - port: 8983
+      nodePort: 30983
+      protocol: TCP
+      name: dse-search
+    - port: 8182
+      protocol: TCP
+      name: dse-graph
+    - port: 5598
+      protocol: TCP
+      name: dsefs-public
+    - port: 4040
+      protocol: TCP
+      nodePort: 30040
+      name: spark-app
+    - port: 7081
+      protocol: TCP
+      name: spark-console
+    - port: 8090
+      protocol: TCP
+      name: spark-jobserver
+    - port: 10000
+      protocol: TCP
+      name: spark-sql
+  selector:
+    app: dse-server
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dse-server
+  labels:
+    app: dse-server
+spec:
+  serviceName: dse-server
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dse-server
+  template:
+    metadata:
+      namespace: datastax
+      labels:
+        app: dse-server
+    spec:
+      terminationGracePeriodSeconds: 1800
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: dse-server
+          image: crwstax/dsd-dse-server:0.0.2
+          imagePullPolicy: Always
+          args: ["-s", "-k", "-g"]
+          ports:
+            # NOTE: port declarations here are informational only; all ports are actually open
+            # Cassandra Ports
+            - containerPort: 7000
+              name: intra-node
+            - containerPort: 7001
+              name: tls-intra-node
+            - containerPort: 7199
+              name: jmx
+            - containerPort: 9042
+              name: cql
+            # Search Port
+            - containerPort: 8983
+              name: dse-search
+            # Graph Port
+            - containerPort: 8182
+              name: dse-graph
+            # DSEFS Ports
+            - containerPort: 5598
+              name: dsefs-public
+            - containerPort: 5599
+              name: dsefs-intranode
+            # Analytics Ports
+            - containerPort: 4040
+              name: spark-app-web
+            - containerPort: 7077
+              name: spark-intranode
+            - containerPort: 7080
+              name: spark-console
+            - containerPort: 7081
+              name: spark-worker
+            - containerPort: 8090
+              name: spark-jobserver
+            - containerPort: 9999
+              name: spark-jobs-jmx
+            - containerPort: 10000
+              name: spark-sql
+            - containerPort: 18080
+              name: spark-history
+            # OpsCenter
+            - containerPort: 61621
+              name: stomp-in
+            - containerPort: 9103
+              name: dse-insights
+          resources:
+            limits:
+              cpu: "2"
+              memory: 4Gi
+            requests:
+              cpu: "0.5"
+              memory: 1Gi
+          securityContext:
+            capabilities:
+              add:
+                - IPC_LOCK
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - nodetool drain
+          env:
+            - name: DS_LICENSE
+              value: accept
+            - name: JVM_EXTRA_OPTS
+              value: "-Xms2g -Xmx4g"
+            - name: OPSCENTER_IP
+              value: "dse-opscenter"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          # These volume mounts are persistent. They are like inline claims,
+          # but not exactly because the names need to match exactly one of
+          # the stateful pod volumes.
+          volumeMounts:
+            - name: dse-data
+              mountPath: /var/lib/cassandra
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - cqlsh
+          #   failureThreshold: 20
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+  # These are converted to volume claims by the controller
+  # and mounted at the paths mentioned above.
+  # do not use these in production until ssd GCEPersistentDisk or other ssd pd
+  volumeClaimTemplates:
+    - metadata:
+        name: dse-data
+        namespace: datastax
+        annotations:
+          pv.beta.kubernetes.io/gid: "1000"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        # storageClassName:
+        resources:
+          requests:
+            storage: 5Gi
+            # ---
+            # kind: StorageClass
+            # apiVersion: storage.k8s.io/v1
+            # metadata:
+            #   name: fast
+            # provisioner: k8s.io/minikube-hostpath
+            # parameters:
+            #   type: pd-ssd

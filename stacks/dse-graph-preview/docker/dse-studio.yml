@@ -1,0 +1,13 @@
+image: crwstax/dsd-studio-graph-preview:0.0.1
+env:
+  DS_LICENSE: accept
+  STUDIO_DEFAULT_CONNECTION_HOST: "$stack.layers.0.slug"
+  STUDIO_DEFAULT_CONNECTION_NAME: "DataStax Desktop"
+ports:
+  - "9091"
+containerArgs: ""
+healthCheck:
+  command: "wget localhost:9091 -q -O - > /dev/null 2>&1"
+  interval: 10s
+  retries: "20"
+  timeout: 10s

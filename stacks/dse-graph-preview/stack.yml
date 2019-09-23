@@ -1,0 +1,83 @@
+# stack metadata
+id: dse-graph-preview
+name: DataStax Enterprise 6.8 Graph Preview
+description: >-
+  The DataStax Enterprise 6.8 Graph Preview Stack demonstrates our forthcoming 6.8 
+  Version which features an all new Graph engine. Use the example notebooks provided in 
+  Studio 6.8 to check out these new features.
+shortDescription: >-
+  Check out our new Graph engine that is coming with DSE 6.8.
+
+disabled: false
+
+category: FullStack
+order: 3
+
+# ui options (images are mapped from the stack image registry)
+avatarImage: avatarDSE
+bannerImage: bannerGraphGrey
+
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out how to get started with Cassandra Query Language while we finish.
+
+# startHereLinks - links to display (on small cards) on the stack detail while a
+# stack is running, useful for linking services that are part of the stack
+startHereLinks:
+  - title: "DataStax Graph: CQL as Graph"
+    subTitle: Getting started with CQL using Graph
+    avatarImage: avatarDSE
+    url: http://127.0.0.1:9091/notebooks/a1e10604-c3dd-4164-9426-b005ccd820f4
+  - title: "DataStax Graph: Gremlin"
+    subTitle: Getting started with Gremlin in 6.8
+    avatarImage: avatarStudio
+    url: http://127.0.0.1:9091/notebooks/2305bbba-11a0-438f-aeee-2306a69b7105
+
+# set available backends
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: false
+
+# advise resource requirements
+resourceRequirements:
+  cpus: 4
+  memory: 8 #GB
+
+# setup the stack layers
+layers:
+  - id: dse-server
+    name: DSE
+    version: 6.8.0
+    description: >-
+      The always-on, Active Everywhere distributed hybrid cloud database built on Apache Cassandra™.
+    # configure the layer for each backend
+    backends:
+      kubernetes:
+        configFile: /dse-graph-preview/kubernetes/dse-server.yml
+      docker:
+        configFile: /dse-graph-preview/docker/dse-server.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: DSE Client
+        port: 9042
+
+  - id: dse-studio
+    name: DSE Studio
+    version: 6.8.0
+    description: >-
+      An intuitive and collaborative tool for developers and analysts with self-documenting notebooks.
+      DSE Studio is designed to simplify your
+      Cassandra Query Language (CQL), DSE Graph, and Spark SQL development.
+    # configure the layer for each backend
+    backends:
+      kubernetes:
+        configFile: /dse-graph-preview/kubernetes/dse-studio.yml
+      docker:
+        configFile: /dse-graph-preview/docker/dse-studio.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: Studio UI
+        showLink: true
+        port: 9091

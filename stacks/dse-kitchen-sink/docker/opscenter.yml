@@ -1,0 +1,13 @@
+image: crwstax/dsd-dse-opscenter:0.0.2
+env:
+  DS_LICENSE: accept
+  OPSCENTER_SEED_HOSTS: "$stack.layers.0.slug"
+ports:
+  - "8888"
+  - "61620"
+containerArgs: ""
+healthCheck:
+  command: "wget localhost:8888 -q -O - > /dev/null 2>&1"
+  interval: 10s
+  retries: "20"
+  timeout: 10s

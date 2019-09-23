@@ -1,0 +1,47 @@
+id: dse-opscenter
+name: DataStax Enterprise OpsCenter
+description: >-
+  DataStax OpsCenter is an easy-to-use visual management and monitoring solution for DataStax 
+  Enterprise (DSE), the always-on data layer for real-time applications. With OpsCenter, you 
+  can quickly provision, upgrade, monitor, backup/restore, and manage your DSE clusters with 
+  little to no expertise. 
+shortDescription: >-
+  Easy DSE Deployment and Management, No Matter the Scale.
+category: LayerStack
+order: 4
+avatarImage: avatarOpscenter
+bannerImage: bannerGraphWhite
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out the getting started links while we finish.
+documentationLinks:
+  - title: DataStax OpsCenter 6.7.4
+    subTitle: Official DataStax OpsCenter Documentation.
+    avatarImage: avatarStudio
+    url: https://docs.datastax.com/en/opscenter/6.7/index.html
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: true
+resourceRequirements:
+  cpus: 1
+  memory: 2 #GB
+layers:
+  - id: dse-opscenter
+    name: DSE OpsCenter
+    version: 6.7.3
+    description: >-
+      OpsCenter is the web-based visual management and monitoring solution for DataStax Enterprise 
+      DSE.
+    backends:
+      docker:
+        configFile: /opscenter/docker/dse-opscenter.yml
+      kubernetes:
+        configFile: /opscenter/kubernetes/dse-opscenter.yml
+    ports:
+      - name: OpsCenter UI
+        port: 8888
+        showLink: true
+      - name: STOMP
+        port: 61620

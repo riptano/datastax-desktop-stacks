@@ -1,0 +1,17 @@
+image: crwstax/dsd-dse-server:0.0.2
+env:
+  DS_LICENSE: accept
+  JVM_EXTRA_OPS: "-Xms1g -Xmx4g"
+  OPSCENTER_IP: "$stack.layers.2.slug"
+containerArgs: "-s -k -g"
+ports:
+  - "4040"
+  - "7199"
+  - "9042"
+  - "9077"
+  - "9142"
+healthCheck:
+  command: cqlsh
+  interval: 10s
+  retries: "20"
+  timeout: 10s

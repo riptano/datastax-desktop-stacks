@@ -1,0 +1,56 @@
+# stack metadata
+id: ddac-server
+name: DataStax Distribution of Apache Cassandra (DDAC)
+description: >-
+  As Apache Cassandra™ adoption grows within your organization, so could the challenges
+  involved with using, maintaining, and supporting the technology. This can add
+  considerable cost, complexity, and administrative burden. DataStax Distribution of
+  Apache Cassandra addresses these challenges by streamlining operations and controlling
+  costs for all your Cassandra workloads.
+shortDescription: >-
+  Explore DDAC, our production-ready version of Apache Cassandra™.
+
+category: LayerStack
+order: 1
+
+# ui options (images are mapped from the stack image registry)
+avatarImage: avatarDSE
+bannerImage: bannerGraphBlue
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out how to get started with Cassandra Query Language while we finish.
+documentationLinks:
+  - title: CQL 6.7
+    subTitle: Getting started with Cassandra Query Language (CQL)
+    avatarImage: avatarStudio
+    url: https://docs.datastax.com/en/dse/6.7/cql/cql/cql_using/introTOC.html
+
+# set available backends
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: true
+
+# advise resource requirements
+resourceRequirements:
+  cpus: 1
+  memory: 2 #GB
+
+# setup the stack layers
+layers:
+  - id: ddac-server
+    name: DDAC
+    version: 5.1.15
+    description: Core Data Layer
+    # configure the layer for each backend
+    backends:
+      docker:
+        configFile: /ddac/docker/ddac.yml
+      kubernetes:
+        configFile: /ddac/kubernetes/ddac.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: CQL
+        port: 9042
+        k8sPort: 30042

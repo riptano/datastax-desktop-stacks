@@ -1,0 +1,20 @@
+image: crwstax/dsd-dse-server:0.0.2
+env:
+  DS_LICENSE: accept
+  JVM_EXTRA_OPS: "-Xms2g -Xmx4g"
+ports:
+  - "4040"
+  - "5598"
+  - "7080"
+  - "7081"
+  - "8182"
+  - "8983"
+  - "9042"
+  - "9077"
+  - "9142"
+containerArgs: "-s -k -g"
+healthCheck:
+  command: cqlsh
+  interval: 10s
+  retries: "20"
+  timeout: 10s

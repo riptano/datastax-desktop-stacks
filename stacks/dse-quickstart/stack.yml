@@ -1,0 +1,123 @@
+# id - a slugified (lowercase, no spaces) string that must be unique per stack
+id: dse-quickstart
+
+# name - the display name for the stack, presented in the store and used as the
+# default for the stack slug (unique identifier) when a user provisions
+name: DataStax Enterprise 6.7 CQL Quick Start
+
+# description - a long description of the stack, displayed in the store stack detail
+description: >-
+  The DataStax Enterprise 6.7 CQL Quick Start demonstrates the main
+  benefits of DataStax Enterprise's core data layer using CQL. In this stack, 
+  you'll use DataStax Studio to explore CQL and DSE in a guided, hands-on approach.
+
+# shortDescription - a short description of the stack, displayed in the store on the
+# stack card
+shortDescription: >-
+  Get started using DataStax Enterprise using CQL.
+
+category: FullStack
+order: 1
+
+# avatarImage - an image from the image repository or a web url that is displayed on
+# the stack card
+avatarImage: avatarDSE6
+
+# bannerImage - an image from the image repository or a web url that is displayed on
+# the store stack card
+bannerImage: bannerGraphIndigo
+
+# provisioningText - the text to display on the stack detail while a stack is
+# provisioning, there is default text if none are provided
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out the getting started links while we finish.
+
+# documentationLinks - links to display (on small cards) on the stack detail while
+# provisioning, useful for docunmentation or getting started links
+documentationLinks:
+  - title: DSE 6.7
+    subTitle: Getting started with DSE for developers
+    avatarImage: avatarDSE6
+    url: https://docs.datastax.com/en/dse/6.7/dse-dev/datastax_enterprise/dseGettingStarted.html
+  - title: CQL 6.7
+    subTitle: Getting started with Cassandra Query Language (CQL)
+    avatarImage: avatarStudio
+    url: https://docs.datastax.com/en/dse/6.7/cql/cql/cql_using/introTOC.html
+
+# startHereLinks - links to display (on small cards) on the stack detail while a
+# stack is running, useful for linking services that are part of the stack
+startHereLinks:
+  - title: Explore common CQL operations
+    subTitle: Getting started with CQL
+    avatarImage: avatarDSE6
+    url: http://127.0.0.1:9091/notebooks/2f09edd0-39e2-4e2c-8ac5-8c298d5cc726
+
+# dockerBackend - a flag that enables the docker backend for the stack
+dockerBackend:
+  enabled: true
+
+# dockerBackend - a flag that enables the kubernetes backend for the stack
+kubernetesBackend:
+  enabled: true
+
+# resourceRequirements - local resource requirements for the stack, resource
+# requirements must be met before provisioning
+resourceRequirements:
+  cpus: 1
+  memory: 4 #GB
+
+# layers - Stacks are composed of layers, each backend handles layers differently.
+# Docker treats each container as a layer, whereas in K8s, each layer is a single
+# K8s deployment file, for example, a file containing a service and a stateful set.
+layers:
+    # id - a slugified (lowercase, no spaces) string that must be unique per layer
+    # inside the stack
+  - id: dse-server
+
+    # name - the display name for the layer, presented in the stack card and detail
+    name: DSE
+
+    # version - the version to display for the layer, displayed on the stack card
+    # and detail
+    version: 6.7.4
+
+    # description - a long description of the layer, displayed in the store stack detail
+    description: >-
+      The always-on, Active Everywhere distributed hybrid cloud database built on Apache Cassandra™.
+
+    # backend - path to the configuration files for each backend type. Docker uses a
+    # notation similar to Docker Compose, Kubernetes uses plain 'ol K8s files.
+    backends:
+      docker:
+        configFile: /dse-quickstart/docker/dse-server.yml
+      kubernetes:
+        configFile: /dse-quickstart/kubernetes/dse-server.yml
+
+    # ports - Ports and connections to display on the stack detail. Ports are also used
+    # as requirements for local stacks (ports defined here must be open to provision).
+    ports:
+      - name: DSE Client
+        port: 9042
+        k8sPort: 30042
+
+  - id: dse-studio
+    name: DSE Studio
+    version: 6.7.4
+    description: >-
+      An intuitive and collaborative tool for developers and analysts with self-documenting notebooks.
+      DSE Studio is designed to simplify your
+      Cassandra Query Language (CQL), DSE Graph, and Spark SQL development.
+    # configure the layer for each backend
+    backends:
+      docker:
+        configFile: /dse-quickstart/docker/dse-studio.yml
+      kubernetes:
+        configFile: /dse-quickstart/kubernetes/dse-studio.yml
+      # ports and connections to display in the UI
+    ports:
+      - name: Studio UI
+        port: 9091
+        k8sPort: 30091
+        showLink: true

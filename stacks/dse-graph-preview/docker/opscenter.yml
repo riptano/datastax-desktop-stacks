@@ -1,0 +1,13 @@
+---
+image: datastax/dse-opscenter
+env:
+  DS_LICENSE: accept
+ports:
+  - "8888"
+  - "61620"
+containerArgs: ""
+healthCheck:
+  command: "wget localhost:8888 -q -O - > /dev/null 2>&1"
+  interval: 10s
+  retries: "20"
+  timeout: 10s

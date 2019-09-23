@@ -1,0 +1,125 @@
+# stack metadata
+id: dse-kitchensink
+name: DataStax Enterprise 6.7 Kitchen Sink
+description: >-
+  The DataStax Enterprise 6.7 Quick Start demonstrates the main
+  benefits of DataStax Enterprise (DSE). In this stack, use DataStax Studio to explore
+  the facets of DSE in a guided, hands-on approach.
+shortDescription: >-
+  Quickly see all that DataStax Enterprise (DSE) can do.
+
+category: FullStack
+order: 2
+
+# ui options (images are mapped from the stack image registry)
+avatarImage: avatarDSE6
+bannerImage: bannerGraphWhite
+
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out how to get started with Cassandra Query Language while we finish.
+
+# documentationLinks - links to display (on small cards) on the stack detail while
+# provisioning, useful for docunmentation or getting started links
+documentationLinks:
+  - title: DSE 6.7
+    subTitle: Getting started with DSE for developers
+    avatarImage: avatarDSE6
+    url: https://docs.datastax.com/en/dse/6.7/dse-dev/datastax_enterprise/dseGettingStarted.html
+  - title: CQL 6.7
+    subTitle: Getting started with Cassandra Query Language (CQL)
+    avatarImage: avatarStudio
+    url: https://docs.datastax.com/en/dse/6.7/cql/cql/cql_using/introTOC.html
+
+# startHereLinks - links to display (on small cards) on the stack detail while a
+# stack is running, useful for linking services that are part of the stack
+startHereLinks:
+  - title: Explore common CQL operations
+    subTitle: Getting started with CQL
+    avatarImage: avatarDSE6
+    url: http://127.0.0.1:30010/notebooks/2f09edd0-39e2-4e2c-8ac5-8c298d5cc726
+  - title: Explore graph traversals with DSE Graph
+    subTitle: Getting started with Gremlin
+    avatarImage: avatarStudio
+    url: http://127.0.0.1:30010/notebooks/24df1713-1131-4a19-8ff3-7b6d23d0caad
+  - title: Explore Spark SQL inside DSE
+    subTitle: Getting started with Spark
+    avatarImage: avatarDrivers
+    url: http://127.0.0.1:30010/notebooks/3a0a2fc4-d7d7-40ba-9438-8d672da3c1d5
+  - title: Explore how DSE features work together
+    subTitle: Getting started with DSE
+    avatarImage: avatarOpscenter
+    url: http://127.0.0.1:30010/notebooks/4cbe5b23-3a25-44b1-ae06-da8dce4ac20f
+
+# set available backends
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: true
+
+# advise resource requirements
+resourceRequirements:
+  cpus: 4
+  memory: 8 #GB
+
+# setup the stack layers
+layers:
+  - id: dse-server
+    name: DSE
+    version: 6.7.4
+    description: >-
+      The always-on, Active Everywhere distributed hybrid cloud database built on Apache Cassandra™.
+    # configure the layer for each backend
+    backends:
+      kubernetes:
+        configFile: /dse-kitchen-sink/kubernetes/dse-server.yml
+      docker:
+        configFile: /dse-kitchen-sink/docker/dse-server.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: DSE Client
+        port: 9042
+        k8sPort: 30042
+      # - name: Spark UI
+      #   port: 4040
+      #   k8sPort: 30042
+      #   showLink: true
+
+  - id: dse-studio
+    name: DSE Studio
+    version: 6.7.4
+    description: >-
+      An intuitive and collaborative tool for developers and analysts with self-documenting notebooks.
+      DSE Studio is designed to simplify your
+      Cassandra Query Language (CQL), DSE Graph, and Spark SQL development.
+    # configure the layer for each backend
+    backends:
+      kubernetes:
+        configFile: /dse-kitchen-sink/kubernetes/dse-studio.yml
+      docker:
+        configFile: /dse-kitchen-sink/docker/dse-studio.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: Studio UI
+        showLink: true
+        port: 9091 
+        k8sPort: 30010
+
+  - id: dse-opscenter
+    name: DSE Ops Center
+    version: 6.7.4
+    description: >-
+      OpsCenter is the web-based visual management and monitoring solution for DataStax Enterprise DSE.
+    # configure the layer for each backend
+    backends:
+      docker:
+        configFile: /dse-kitchen-sink/docker/opscenter.yml
+      kubernetes:
+        configFile: /dse-kitchen-sink/kubernetes/dse-opscenter.yml
+    # ports and connections to display in the UI
+    ports:
+      - name: Ops Center UI
+        showLink: true
+        port: 8888 
+        k8sPort: 30080

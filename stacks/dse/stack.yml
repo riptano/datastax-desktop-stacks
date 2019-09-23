@@ -1,0 +1,53 @@
+id: dse-server
+name: DataStax Enterprise
+description: >-
+  DSE is the most widely deployed distributed hybrid cloud database, and we’ve taken lessons 
+  learned from a broad range of enterprise-grade deployments and put them into this latest 
+  release. We’ve made DSE easier to deploy, manage, and customize to your specific environment, 
+  and for mixed data models. It’s the only active everywhere database platform that runs 
+  wherever needed—on-premises, across regions, or in the cloud.
+shortDescription: >-
+  The Always-On, Active Everywhere, Distributed Hybrid Cloud Database Built on Apache Cassandra.
+category: LayerStack
+order: 3
+avatarImage: avatarDSE6
+bannerImage: bannerGraphIndigo
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out the getting started links while we finish.
+documentationLinks:
+  - title: DSE 6.7
+    subTitle: Official DSE Documentation for Developers.
+    avatarImage: avatarDSE6
+    url: https://docs.datastax.com/en/dse/6.7/dse-dev/
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: true
+resourceRequirements:
+  cpus: 1
+  memory: 4 #GB
+layers:
+  - id: dse-server
+    name: DSE
+    version: 6.7.4
+    description: >-
+      The always-on, Active Everywhere distributed hybrid cloud database built on Apache Cassandra™.
+    backends:
+      docker:
+        configFile: /dse/docker/dse-server.yml
+      kubernetes:
+        configFile: /dse/kubernetes/dse-server.yml
+    ports:
+      - name: DSE Client
+        port: 9042
+        k8sPort: 30042
+      - name: Spark UI
+        port: 4040
+        k8sPort: 30040
+        showLink: true
+      - name: Search UI
+        port: 8983
+        k8sPort: 30983
+        showLink: true

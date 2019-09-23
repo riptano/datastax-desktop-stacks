@@ -1,0 +1,46 @@
+id: dse-studio
+name: DataStax Studio
+description: >-
+  An intuitive and collaborative tool for developers, designed to help your Cassandra Query 
+  Language (CQL), DSE Graph, and Spark SQL language development. Easily collaborate between 
+  developers and analysts with self-documenting notebooks.
+shortDescription: >-
+  An interactive, collaborative tool for developers and analysts.
+category: LayerStack
+order: 2
+avatarImage: avatarStudio
+bannerImage: bannerGraphGrey
+provisioningText: >-
+  We're provisioning your stack. The initial provisioning process takes more time
+  because we fetch our official online resources.
+  Subsequent provisions will be much faster. Check out the getting started links while we finish.
+documentationLinks:
+  - title: DataStax Studio 6.7.4
+    subTitle: Official DataStax Studio Documentation.
+    avatarImage: avatarStudio
+    url: https://docs.datastax.com/en/studio/6.7/index.html
+dockerBackend:
+  enabled: true
+kubernetesBackend:
+  enabled: true
+resourceRequirements:
+  cpus: 1
+  memory: 2 #GB
+layers:
+  - id: dse-studio
+    name: DSE Studio
+    version: 6.7.4
+    description: >-
+      An intuitive and collaborative tool for developers and analysts with self-documenting notebooks.
+      DSE Studio is designed to simplify your
+      Cassandra Query Language (CQL), DSE Graph, and Spark SQL development.
+    backends:
+      docker:
+        configFile: /studio/docker/dse-studio.yml
+      kubernetes:
+        configFile: /studio/kubernetes/dse-studio.yml
+    ports:
+      - name: Studio UI
+        port: 9091
+        k8sPort: 30010
+        showLink: true

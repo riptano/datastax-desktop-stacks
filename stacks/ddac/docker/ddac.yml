@@ -1,0 +1,14 @@
+image: datastax/ddac:5.1.15
+env:
+  DS_LICENSE: accept
+  JVM_EXTRA_OPS: "-Xms1g -Xmx2g"
+ports:
+  - "9042"
+  - "9077"
+  - "9142"
+containerArgs: ""
+healthCheck:
+  command: cqlsh
+  interval: 10s
+  retries: "20"
+  timeout: 10s

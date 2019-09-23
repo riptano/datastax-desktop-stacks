@@ -1,0 +1,56 @@
+# Repository name for display on the Settings screen
+name: DataStax Desktop Stacks
+
+# A short repository description for display on the Settings screen
+description: DataStax Desktop's core set of Stacks.
+
+# Organization/Individual owner of the repository
+author: DataStax, Inc.
+
+# The current version of the repository, used to manage caching
+version: 1.0.0
+
+# The location of the repository manifest, used to determine relative paths to 
+# stack definition files
+location: https://github.com/riptano/datastax-desktop-stacks/blob/master
+
+# List of stack defintion files and names. Ordering here will determine order in
+# the stack store 
+stacks:
+
+  # The name of the stack to display when adding the repository
+  - name: DataStax Enterprise 6.7 CQL Quick Start
+
+    # The location of the stack definition file. Relative paths will use the base
+    # path provided as the repository location. Local paths can also be specified
+    # with the "file://" prefix. "http://", "https://", "file://" are the available
+    # location types.
+    location: stacks/dse-quickstart/stack.yml
+
+  - name: DataStax Enterprise 6.7 Kitchen Sink
+    location: stacks/dse-kitchen-sink/stack.yml
+
+  - name: DataStax Distribution of Apache Cassandra (DDAC)
+    location: stacks/ddac/stack.yml
+
+  - name: DataStax Enterprise 6.8 Graph Preview
+    location: stacks/dse-graph-preview/stack.yml
+
+  - name: DataStax Enterprise
+    location: stacks/ddac/stack.yml
+
+  - name: DataStax Studio
+    location: stacks/studio/stack.yml
+
+  - name: DataStax Enterprise OpsCenter
+    location: stacks/opscenter/stack.yml
+
+
+    
+
+
+    
+
+    
+
+    

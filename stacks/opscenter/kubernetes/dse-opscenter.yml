@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dse-opscenter
+  labels:
+    app: dse-opscenter
+spec:
+  # clusterIP: None
+  type: NodePort
+  ports:
+  - port: 8888
+    name: opscenter-ui
+    protocol: TCP
+    targetPort: 8888
+    nodePort: 30080
+  - port: 61620
+    name: stomp
+    protocol: TCP
+    targetPort: 61620
+  selector:
+    app: dse-opscenter
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dse-opscenter
+  labels:
+    app: dse-opscenter
+spec:
+  serviceName: dse-opscenter
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dse-opscenter
+  template:
+    metadata:
+      labels:
+        app: dse-opscenter
+    spec:
+      terminationGracePeriodSeconds: 1800
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: dse-opscenter
+        image: datastax/dse-opscenter
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8888
+          name: opscenter-ui
+        - containerPort: 61620
+          name: stomp
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: 2500Mi
+          requests:
+            cpu: "0.5"
+            memory: 2500Mi
+        env:
+          - name: DS_LICENSE
+            value: accept
+        volumeMounts:
+        - name: dse-opscenter-data
+          mountPath: /var/lib/opscenter
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8888
+          failureThreshold: 20
+          initialDelaySeconds: 60
+          periodSeconds: 30
+  volumeClaimTemplates:
+  - metadata:
+      name: dse-opscenter-data
+      annotations:
+        pv.beta.kubernetes.io/gid: "1000"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      # storageClassName: 
+      resources:
+        requests:
+          storage: 10Gi
